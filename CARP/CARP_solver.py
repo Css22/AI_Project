@@ -177,215 +177,229 @@ def Single_insertion(File_Reader,Result,Q_array):
                 Result[index1].remove(Result[index1][index2])
                 return new_cost
 def Double_insertion(File_Reader,Result ,max_length,Q_array):
-    while True:
-        n = random.randint(1,max_length)
+    n = random.randint(1, max_length)
+    index1 = random.randint(0, len(Result) - 1)
+    while len(Result[index1]) <= n:
         index1 = random.randint(0, len(Result) - 1)
-        while len(Result[index1]) <= n:
-            index1 = random.randint(0, len(Result) - 1)
-        index2 = random.randint(0, len(Result[index1])-1 - (n - 1))
-        index3 = random.randint(0, len(Result) - 1)
-        index4 = random.randint(0, len(Result[index3]))
+    index2 = random.randint(0, len(Result[index1]) - 1 - (n - 1))
+    index3 = random.randint(0, len(Result) - 1)
+    index4 = random.randint(0, len(Result[index3]))
 
-        if index1 == index3:
+    if index1 == index3:
+        index4 = random.randint(0, len(Result[index3]) - 1)
+        while index2 == index4 or (index2 < index4 and index2 + n - 1 >= index4) or index2 + n == index4:
+            index2 = random.randint(0, len(Result[index1]) - 1 - (n - 1))
             index4 = random.randint(0, len(Result[index3]) - 1)
-            while index2 == index4 or (index2 < index4 and index2 + n - 1 >= index4) or index2 + n  == index4:
-                index2 = random.randint(0, len(Result[index1]) - 1 - (n - 1))
-                index4 = random.randint(0, len(Result[index3]) - 1)
 
-            if index2 - index4 == 1:
-                change = 0
-                if index4 == 0 and index2 + n - 1 == len(Result[index3]) - 1:
-                    change = change - (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
-                                       File_Reader.distance[Result[index3][index4][1]][Result[index1][index2][0]] +
-                                       File_Reader.distance[Result[index1][index2 + n - 1 ][1]][File_Reader.Depot]) \
-                             + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
-                                File_Reader.distance[Result[index1][index2 + n - 1 ][1]][Result[index3][index4][0]] +
-                                File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot])
+        if index2 - index4 == 1:
+            change = 0
+            if index4 == 0 and index2 + n - 1 == len(Result[index3]) - 1:
+                change = change - (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
+                                   File_Reader.distance[Result[index3][index4][1]][Result[index1][index2][0]] +
+                                   File_Reader.distance[Result[index1][index2 + n - 1][1]][File_Reader.Depot]) \
+                         + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
+                            File_Reader.distance[Result[index1][index2 + n - 1][1]][Result[index3][index4][0]] +
+                            File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot])
 
-                if index4 == 0 and index2 + n - 1  != len(Result[index3]) - 1:
-                    change = change - (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]]  +
-                                       File_Reader.distance[Result[index3][index4][1]][Result[index1][index2][0]] +
-                                       File_Reader.distance[Result[index1][index2 + n - 1 ][1]][Result[index1][index2 + n - 1 +1][0]]) \
-                             + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
-                                File_Reader.distance[Result[index1][index2 + n - 1 ][1]][Result[index3][index4][0]] +
-                                File_Reader.distance[Result[index3][index4][1]][Result[index1][index2 + n - 1 +1][0]])
+            if index4 == 0 and index2 + n - 1 != len(Result[index3]) - 1:
+                change = change - (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
+                                   File_Reader.distance[Result[index3][index4][1]][Result[index1][index2][0]] +
+                                   File_Reader.distance[Result[index1][index2 + n - 1][1]][
+                                       Result[index1][index2 + n - 1 + 1][0]]) \
+                         + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
+                            File_Reader.distance[Result[index1][index2 + n - 1][1]][Result[index3][index4][0]] +
+                            File_Reader.distance[Result[index3][index4][1]][Result[index1][index2 + n - 1 + 1][0]])
 
-                if index4 != 0 and index2 + n - 1  == len(Result[index3]) - 1:
-                    change = change - (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]]  +
-                                       File_Reader.distance[Result[index3][index4][1]][Result[index1][index2][0]] +
-                                       File_Reader.distance[Result[index1][index2 + n - 1 ][1]][File_Reader.Depot]) \
-                             + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
-                                File_Reader.distance[Result[index1][index2 + n - 1 ][1]][Result[index3][index4][0]] +
-                                File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot])
-                if index4 != 0 and index2 + n - 1  != len(Result[index3]) - 1:
-                    change = change - (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]]  +
-                                       File_Reader.distance[Result[index3][index4][1]][Result[index1][index2][0]] +
-                                       File_Reader.distance[Result[index1][index2 + n - 1 ][1]][Result[index1][index2 + n - 1 +1][0]]) \
-                             + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
-                                File_Reader.distance[Result[index1][index2 + n - 1 ][1]][Result[index3][index4][0]] +
-                                File_Reader.distance[Result[index3][index4][1]][Result[index1][index2 + n - 1 +1][0]])
+            if index4 != 0 and index2 + n - 1 == len(Result[index3]) - 1:
+                change = change - (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]] +
+                                   File_Reader.distance[Result[index3][index4][1]][Result[index1][index2][0]] +
+                                   File_Reader.distance[Result[index1][index2 + n - 1][1]][File_Reader.Depot]) \
+                         + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
+                            File_Reader.distance[Result[index1][index2 + n - 1][1]][Result[index3][index4][0]] +
+                            File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot])
+            if index4 != 0 and index2 + n - 1 != len(Result[index3]) - 1:
+                change = change - (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]] +
+                                   File_Reader.distance[Result[index3][index4][1]][Result[index1][index2][0]] +
+                                   File_Reader.distance[Result[index1][index2 + n - 1][1]][
+                                       Result[index1][index2 + n - 1 + 1][0]]) \
+                         + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
+                            File_Reader.distance[Result[index1][index2 + n - 1][1]][Result[index3][index4][0]] +
+                            File_Reader.distance[Result[index3][index4][1]][Result[index1][index2 + n - 1 + 1][0]])
 
-                new_cost = change
-                if new_cost < 0:
-                    a = Result[index1][index2: index2 + n]
-                    for i in range(0, n):
-                        Result[index1].remove(a[i])
-                    for i in range(0, n):
-                        if index2 > index4:
-                            Result[index1].insert(index4 + i, a[i])
-                        else:
-                            Result[index1].insert(index4 + i - n, a[i])
-                    return new_cost
+            new_cost = change
+            if new_cost < 0:
+                a = Result[index1][index2: index2 + n]
+                for i in range(0, n):
+                    Result[index1].remove(a[i])
+                for i in range(0, n):
+                    if index2 > index4:
+                        Result[index1].insert(index4 + i, a[i])
+                    else:
+                        Result[index1].insert(index4 + i - n, a[i])
+                return new_cost
             else:
-                change1 = 0
-                change2 = 0
-                if index2 == 0 and index2 + n - 1 != len(Result[index1]) - 1:
-                    change1 = change1 - (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
-                                         File_Reader.distance[Result[index1][index2 + n - 1][1]][
-                                             Result[index1][index2 + n - 1 + 1][0]]) + (
-                                  File_Reader.distance[File_Reader.Depot][Result[index1][index2 + n - 1 + 1][0]])
-                elif index2 + n - 1 == len(Result[index1]) - 1 and index2 != 0:
-                    change1 = change1 - (
-                                File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
-                                File_Reader.distance[Result[index1][index2 + n - 1][1]][File_Reader.Depot]) + (
-                                  File_Reader.distance[Result[index1][index2 - 1][1]][File_Reader.Depot])
-                elif index2 != 0 and index2 + n - 1 != len(Result[index1]) - 1:
-                    change1 = change1 - (
-                                File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
-                                File_Reader.distance[Result[index1][index2 + n - 1][1]][Result[index1][index2 + n - 1 + 1][0]]) + (
-                                  File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2 + n - 1 + 1][0]])
-
-                if index4 == 0:
-                    change2 = change2 + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
-                                         File_Reader.distance[Result[index1][index2 + n - 1][1]][Result[index3][index4][0]]) - (
-                                  File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]])
-                elif index4 == len(Result[index3]):
-                    change2 = change2 + (
-                            File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
-                            File_Reader.distance[Result[index1][index2 + n - 1][1]][File_Reader.Depot]) - (
-                                  File_Reader.distance[Result[index3][index4 - 1][1]][File_Reader.Depot])
-                else:
-                    change2 = change2 + (
-                            File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
-                            File_Reader.distance[Result[index1][index2 + n - 1][1]][Result[index3][index4][0]]) - (
-                                  File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]])
-
-                new_cost = change2 + change1
-                if new_cost < 0:
-                    a = Result[index1][index2 : index2 + n]
-                    for i in range (0,n):
-                        Result[index1].remove(a[i])
-                    for i in range(0 , n):
-                        if index2 > index4:
-                            Result[index1].insert(index4 + i , a[i])
-                        else:
-                            Result[index1].insert(index4 + i - n,a[i])
-                    return new_cost
+                return 0
         else:
-            Add_load = 0
-            for i in range(0, n):
-                Add_load = Add_load + File_Reader.ori_distance[Result[index1][index2 + i][0]][
-                    Result[index1][index2 + i][1]]
-            if Q_array[index3] + Add_load > File_Reader.Capacity:
-                continue
             change1 = 0
             change2 = 0
-            if index2 == 0 and index2 + n-1 != len(Result[index1]) - 1:
+            if index2 == 0 and index2 + n - 1 != len(Result[index1]) - 1:
                 change1 = change1 - (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
-                                     File_Reader.distance[Result[index1][index2 + n-1][1]][Result[index1][index2 + n-1+ 1][0]]) + (
-                              File_Reader.distance[File_Reader.Depot][Result[index1][index2 + n-1 + 1][0]])
-            elif index2 + n-1 == len(Result[index1]) - 1 and index2 != 0:
-                change1 = change1 - (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
-                                     File_Reader.distance[Result[index1][index2 + n-1][1]][File_Reader.Depot]) + (
+                                     File_Reader.distance[Result[index1][index2 + n - 1][1]][
+                                         Result[index1][index2 + n - 1 + 1][0]]) + (
+                              File_Reader.distance[File_Reader.Depot][Result[index1][index2 + n - 1 + 1][0]])
+            elif index2 + n - 1 == len(Result[index1]) - 1 and index2 != 0:
+                change1 = change1 - (
+                        File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
+                        File_Reader.distance[Result[index1][index2 + n - 1][1]][File_Reader.Depot]) + (
                               File_Reader.distance[Result[index1][index2 - 1][1]][File_Reader.Depot])
-            elif index2 != 0 and index2 + n-1 != len(Result[index1]) - 1:
-                change1 = change1 - (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
-                                     File_Reader.distance[Result[index1][index2 + n-1][1]][Result[index1][index2 + n-1 + 1][0]]) + (
-                              File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2 + n-1 + 1][0]])
+            elif index2 != 0 and index2 + n - 1 != len(Result[index1]) - 1:
+                change1 = change1 - (
+                        File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
+                        File_Reader.distance[Result[index1][index2 + n - 1][1]][
+                            Result[index1][index2 + n - 1 + 1][0]]) + (
+                              File_Reader.distance[Result[index1][index2 - 1][1]][
+                                  Result[index1][index2 + n - 1 + 1][0]])
 
             if index4 == 0:
                 change2 = change2 + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
-                                     File_Reader.distance[Result[index1][index2 + n-1][1]][Result[index3][index4][0]]) - (
+                                     File_Reader.distance[Result[index1][index2 + n - 1][1]][
+                                         Result[index3][index4][0]]) - (
                               File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]])
             elif index4 == len(Result[index3]):
-                change2 = change2 + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
-                                     File_Reader.distance[Result[index1][index2 + n-1][1]][File_Reader.Depot]) - (
+                change2 = change2 + (
+                        File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
+                        File_Reader.distance[Result[index1][index2 + n - 1][1]][File_Reader.Depot]) - (
                               File_Reader.distance[Result[index3][index4 - 1][1]][File_Reader.Depot])
             else:
-                change2 = change2 + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
-                                     File_Reader.distance[Result[index1][index2 + n-1][1]][Result[index3][index4][0]]) - (
+                change2 = change2 + (
+                        File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
+                        File_Reader.distance[Result[index1][index2 + n - 1][1]][Result[index3][index4][0]]) - (
                               File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]])
 
             new_cost = change2 + change1
             if new_cost < 0:
-                for i in range(0,n):
-                    Result[index3].insert(index4 + i, Result[index1][index2+i])
-                a = Result[index1][index2 : index2 + n]
-                for i in a :
-                    Result[index1].remove(i)
-                Q_array[index3] += Add_load
-                Q_array[index1] -= Add_load
+                a = Result[index1][index2: index2 + n]
+                for i in range(0, n):
+                    Result[index1].remove(a[i])
+                for i in range(0, n):
+                    if index2 > index4:
+                        Result[index1].insert(index4 + i, a[i])
+                    else:
+                        Result[index1].insert(index4 + i - n, a[i])
                 return new_cost
+            else:
+                return 0
+    else:
+        Add_load = 0
+        for i in range(0, n):
+            Add_load = Add_load + File_Reader.ori_distance[Result[index1][index2 + i][0]][
+                Result[index1][index2 + i][1]]
+        if Q_array[index3] + Add_load > File_Reader.Capacity:
+            return 0
+        change1 = 0
+        change2 = 0
+        if index2 == 0 and index2 + n - 1 != len(Result[index1]) - 1:
+            change1 = change1 - (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
+                                 File_Reader.distance[Result[index1][index2 + n - 1][1]][
+                                     Result[index1][index2 + n - 1 + 1][0]]) + (
+                          File_Reader.distance[File_Reader.Depot][Result[index1][index2 + n - 1 + 1][0]])
+        elif index2 + n - 1 == len(Result[index1]) - 1 and index2 != 0:
+            change1 = change1 - (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
+                                 File_Reader.distance[Result[index1][index2 + n - 1][1]][File_Reader.Depot]) + (
+                          File_Reader.distance[Result[index1][index2 - 1][1]][File_Reader.Depot])
+        elif index2 != 0 and index2 + n - 1 != len(Result[index1]) - 1:
+            change1 = change1 - (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
+                                 File_Reader.distance[Result[index1][index2 + n - 1][1]][
+                                     Result[index1][index2 + n - 1 + 1][0]]) + (
+                          File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2 + n - 1 + 1][0]])
+
+        if index4 == 0:
+            change2 = change2 + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
+                                 File_Reader.distance[Result[index1][index2 + n - 1][1]][Result[index3][index4][0]]) - (
+                          File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]])
+        elif index4 == len(Result[index3]):
+            change2 = change2 + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
+                                 File_Reader.distance[Result[index1][index2 + n - 1][1]][File_Reader.Depot]) - (
+                          File_Reader.distance[Result[index3][index4 - 1][1]][File_Reader.Depot])
+        else:
+            change2 = change2 + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
+                                 File_Reader.distance[Result[index1][index2 + n - 1][1]][Result[index3][index4][0]]) - (
+                          File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]])
+
+        new_cost = change2 + change1
+        if new_cost < 0:
+            for i in range(0, n):
+                Result[index3].insert(index4 + i, Result[index1][index2 + i])
+            a = Result[index1][index2: index2 + n]
+            for i in a:
+                Result[index1].remove(i)
+            Q_array[index3] += Add_load
+            Q_array[index1] -= Add_load
+            return new_cost
+        else:
+            return 0
+
 def Swap(File_Reader,Result,Q_array):
-  while True:
-      index1 = random.randint(0, len(Result) - 1)
-      index2 = random.randint(0, len(Result[index1]) - 1)
-      index3 = random.randint(0, len(Result) - 1)
-      while index3 == index1:
-          index3 = random.randint(0, len(Result) - 1)
-      index4 = random.randint(0, len(Result[index3]) - 1)
+    index1 = random.randint(0, len(Result) - 1)
+    index2 = random.randint(0, len(Result[index1]) - 1)
+    index3 = random.randint(0, len(Result) - 1)
+    while index3 == index1:
+        index3 = random.randint(0, len(Result) - 1)
+    index4 = random.randint(0, len(Result[index3]) - 1)
 
-      change1 = 0
-      change2 = 0
-      if index2 == 0 and index2 != len(Result[index1]) - 1:
-          change1 = change1 - (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
-                               File_Reader.distance[Result[index1][index2][1]][Result[index1][index2 + 1][0]]) \
-                    + (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
-                       File_Reader.distance[Result[index3][index4][1]][Result[index1][index2 + 1][0]])
-      elif index2 == 0 and index2 == len(Result[index1]) - 1:
-          change1 = change1 - (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
-                               File_Reader.distance[Result[index1][index2][1]][File_Reader.Depot]) \
-                    + (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
-                       File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot])
-      elif index2 != 0 and index2 == len(Result[index1]) - 1:
-          change1 = change1 - (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
-                               File_Reader.distance[Result[index1][index2][1]][File_Reader.Depot]) \
-                    + (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index3][index4][0]] +
-                       File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot])
-      elif index2 != 0 and index2 != len(Result[index1]) - 1:
-          change1 = change1 - (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
-                               File_Reader.distance[Result[index1][index2][1]][Result[index1][index2 + 1][0]]) \
-                    + (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index3][index4][0]] +
-                       File_Reader.distance[Result[index3][index4][1]][Result[index1][index2 + 1][0]])
+    change1 = 0
+    change2 = 0
+    if index2 == 0 and index2 != len(Result[index1]) - 1:
+        change1 = change1 - (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
+                             File_Reader.distance[Result[index1][index2][1]][Result[index1][index2 + 1][0]]) \
+                  + (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
+                     File_Reader.distance[Result[index3][index4][1]][Result[index1][index2 + 1][0]])
+    elif index2 == 0 and index2 == len(Result[index1]) - 1:
+        change1 = change1 - (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
+                             File_Reader.distance[Result[index1][index2][1]][File_Reader.Depot]) \
+                  + (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
+                     File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot])
+    elif index2 != 0 and index2 == len(Result[index1]) - 1:
+        change1 = change1 - (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
+                             File_Reader.distance[Result[index1][index2][1]][File_Reader.Depot]) \
+                  + (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index3][index4][0]] +
+                     File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot])
+    elif index2 != 0 and index2 != len(Result[index1]) - 1:
+        change1 = change1 - (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index1][index2][0]] +
+                             File_Reader.distance[Result[index1][index2][1]][Result[index1][index2 + 1][0]]) \
+                  + (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index3][index4][0]] +
+                     File_Reader.distance[Result[index3][index4][1]][Result[index1][index2 + 1][0]])
 
+    if index4 == 0 and index4 != len(Result[index3]) - 1:
+        change2 = change2 - (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
+                             File_Reader.distance[Result[index3][index4][1]][Result[index3][index4 + 1][0]]) \
+                  + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
+                     File_Reader.distance[Result[index1][index2][1]][Result[index3][index4 + 1][0]])
+    elif index4 == 0 and index4 == len(Result[index3]) - 1:
+        change2 = change2 - (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
+                             File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot]) \
+                  + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
+                     File_Reader.distance[Result[index1][index2][1]][File_Reader.Depot])
+    elif index4 != 0 and index4 != len(Result[index3]) - 1:
+        change2 = change2 - (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]] +
+                             File_Reader.distance[Result[index3][index4][1]][Result[index3][index4 + 1][0]]) \
+                  + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
+                     File_Reader.distance[Result[index1][index2][1]][Result[index3][index4 + 1][0]])
+    elif index4 != 0 and index4 == len(Result[index3]) - 1:
+        change2 = change2 - (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]] +
+                             File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot]) \
+                  + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
+                     File_Reader.distance[Result[index1][index2][1]][File_Reader.Depot])
 
-      if index4 == 0 and index4 != len(Result[index3]) - 1:
-          change2 = change2 - (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
-                               File_Reader.distance[Result[index3][index4][1]][Result[index3][index4 + 1][0]]) \
-                    + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
-                       File_Reader.distance[Result[index1][index2][1]][Result[index3][index4 + 1][0]])
-      elif index4 == 0 and index4 == len(Result[index3]) - 1:
-          change2 = change2 - (File_Reader.distance[File_Reader.Depot][Result[index3][index4][0]] +
-                               File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot]) \
-                    + (File_Reader.distance[File_Reader.Depot][Result[index1][index2][0]] +
-                       File_Reader.distance[Result[index1][index2][1]][File_Reader.Depot])
-      elif index4 != 0 and index4 != len(Result[index3]) - 1:
-          change2 = change2 - (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]] +
-                               File_Reader.distance[Result[index3][index4][1]][Result[index3][index4 + 1][0]]) \
-                    + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
-                       File_Reader.distance[Result[index1][index2][1]][Result[index3][index4 + 1][0]])
-      elif index4 != 0 and index4 == len(Result[index3]) - 1 :
-          change2 = change2 - (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]] +
-                               File_Reader.distance[Result[index3][index4][1]][File_Reader.Depot]) \
-                    + (File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]] +
-                       File_Reader.distance[Result[index1][index2][1]][File_Reader.Depot])
+    new_cost = change2 + change1
+    if new_cost < 0:
+        a = Result[index1][index2]
+        Result[index1][index2] = Result[index3][index4]
+        Result[index3][index4] = a
+        return new_cost
+    else:
+        return 0
 
-      new_cost = change2 + change1
-      if new_cost < 0:
-          a = Result[index1][index2]
-          Result[index1][index2] = Result[index3][index4]
-          Result[index3][index4] = a
-          return new_cost
 
 def two_opt_single(File_Reader,Result,all_cost):
     index = random.randint(0, len(Result) - 1)
@@ -544,6 +558,8 @@ def Path_Scanning(File_Reader):
         all_cost = all_cost + cost
         Result.append(path)
     return all_cost,Result
+def VNS(File_Reader , all_cost , Result):
+    return None
 if __name__ == '__main__':
     start = time.time()
     # filename = sys.argv[1]
@@ -590,12 +606,12 @@ if __name__ == '__main__':
                 cost4 = cost4 + File_Reader.ori_distance[j[0]][j[1]]
                 last = j[1]
             cost4 = cost4 + File_Reader.distance[last][File_Reader.Depot]
-        # cost5 = Double_insertion(File_Reader,Result,max,Q_array)
-        # cost3 = cost4  + cost5
-        # cost3 = Filp(File_Reader,Result,cost3)
-        # cost3 = two_opt_single(File_Reader,Result,cost3)
+        cost5 = Double_insertion(File_Reader,Result,max,Q_array)
+        cost3 = cost4  + cost5
+        cost3 = Filp(File_Reader,Result,cost3)
+        cost3 = two_opt_single(File_Reader,Result,cost3)
         cost5 = two_opt_double(File_Reader,Result,Q_array)
-        cost3 = cost4 + cost5
+        cost3 = cost3 + cost5
         for i in Result:
             last = File_Reader.Depot
             for j in i:
