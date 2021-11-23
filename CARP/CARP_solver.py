@@ -565,11 +565,14 @@ def Path_Scanning(File_Reader):
     return all_cost,Result
 def VNS(File_Reader , all_cost , Result , Q_array, numbers):
     i = 0
-    s = 10000
+    if File_Reader.Vertices_Number <= 20:
+        s = 100
+    else:
+        s = 5000
     while i < numbers:
+
         out_cost = all_cost
         sharking = random.randint(0, 3)
-        sharking = 2
         Result1 = []
         for l in Result:
             Result1.append(l.copy())
@@ -587,25 +590,30 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers):
             change_cost = Double_insertion(File_Reader, Result1, max, Q_array1,True)
             out_cost = out_cost + change_cost
         if sharking == 2:
-            Swap(File_Reader, Result1, Q_array1,True)
+            change_costSwap = Swap(File_Reader, Result1, Q_array1,True)
+            out_cost = out_cost + change_cost
         if sharking == 3:
             change_cost = Filp(File_Reader, Result1, out_cost,True)
             out_cost = change_cost
         # 这里将执行sharking操作
         j = 0
         while j <= 4:
+            # if j == sharking:
+            #     j = j + 1
+            #     continue
             Good = False
             t = 0
-            if j==0:
+            if j==4:
                 while t <= s:
                     change_cost = two_opt_double(File_Reader, Result1, Q_array1)
                     if change_cost < 0:
+                        j = 0
                         Good = True
                         out_cost = out_cost + change_cost
                         t = 0
                     else:
                         t = t + 1
-            if j==1:
+            if j==3:
                 while t <= s:
                     change_cost = two_opt_single(File_Reader, Result1, out_cost,False)
                     if change_cost < out_cost:
@@ -629,19 +637,17 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers):
                         break
                     else:
                         t = t + 1
-            if j==3:
-                j = j + 1
-                continue
-                # while t <= s:
-                #     change_cost = Swap(File_Reader, Result1, Q_array1,False)
-                #     if change_cost < 0:
-                #         j = 0
-                #         out_cost = out_cost + change_cost
-                #         Good = True
-                #         break
-                #     else:
-                #         t = t + 1
-            if j==4:
+            if j==0:
+                while t <= s:
+                    change_cost = Swap(File_Reader, Result1, Q_array1,False)
+                    if change_cost < 0:
+                        j = 0
+                        out_cost = out_cost + change_cost
+                        Good = True
+                        break
+                    else:
+                        t = t + 1
+            if j==1:
                 while t <= s:
                     change_cost = Filp(File_Reader, Result1, out_cost,False)
                     if change_cost < out_cost:
@@ -679,7 +685,7 @@ if __name__ == '__main__':
     # filename = sys.argv[1]
     # timelimit = int(sys.argv[3])
     # seed = int(sys.argv[5])
-    File_Reader = File_Reader('egl-e1-A.dat')
+    File_Reader = File_Reader('gdb10.dat')
     File_Reader.Read_FIle()
     test = File_Reader.Demand_List.copy()
     Result = None
