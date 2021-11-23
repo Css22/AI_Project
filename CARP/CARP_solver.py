@@ -7,7 +7,7 @@ INF = 0x3f3f3f3f
 
 
 
-def Filp(File_Reader , Result,all_cost):
+def Filp(File_Reader , Result,all_cost,sharking):
     index = random.randint(0, len(Result) - 1)
     EndPoint = File_Reader.Depot
     new_cost = all_cost
@@ -25,7 +25,7 @@ def Filp(File_Reader , Result,all_cost):
                        File_Reader.distance[Result[index][i][0]][File_Reader.Depot] - \
                        File_Reader.distance[EndPoint][Result[index][i][0]] - \
                        File_Reader.distance[Result[index][i][1]][File_Reader.Depot]
-        if new_cost < all_cost:
+        if new_cost < all_cost or sharking:
             do = True
             a = Result[index]
             Result[index][i] = (Result[index][i][1],Result[index][i][0])
@@ -175,7 +175,7 @@ def Single_insertion(File_Reader,Result,Q_array):
                 Result[index3].insert(index4, Result[index1][index2])
                 Result[index1].remove(Result[index1][index2])
                 return new_cost
-def Double_insertion(File_Reader,Result ,max_length,Q_array):
+def Double_insertion(File_Reader,Result ,max_length,Q_array,sharking):
     n = random.randint(1, max_length)
     index1 = random.randint(0, len(Result) - 1)
     while len(Result[index1]) <= n:
@@ -226,7 +226,7 @@ def Double_insertion(File_Reader,Result ,max_length,Q_array):
                             File_Reader.distance[Result[index3][index4][1]][Result[index1][index2 + n - 1 + 1][0]])
 
             new_cost = change
-            if new_cost < 0:
+            if new_cost < 0 or sharking :
                 a = Result[index1][index2: index2 + n]
                 for i in range(0, n):
                     Result[index1].remove(a[i])
@@ -276,7 +276,7 @@ def Double_insertion(File_Reader,Result ,max_length,Q_array):
                               File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]])
 
             new_cost = change2 + change1
-            if new_cost < 0:
+            if new_cost < 0 or sharking:
                 a = Result[index1][index2: index2 + n]
                 for i in range(0, n):
                     Result[index1].remove(a[i])
@@ -326,7 +326,7 @@ def Double_insertion(File_Reader,Result ,max_length,Q_array):
                           File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]])
 
         new_cost = change2 + change1
-        if new_cost < 0:
+        if new_cost < 0 or sharking:
             for i in range(0, n):
                 Result[index3].insert(index4 + i, Result[index1][index2 + i])
             a = Result[index1][index2: index2 + n]
@@ -338,7 +338,7 @@ def Double_insertion(File_Reader,Result ,max_length,Q_array):
         else:
             return 0
 
-def Swap(File_Reader,Result,Q_array):
+def Swap(File_Reader,Result,Q_array,sharking):
     index1 = random.randint(0, len(Result) - 1)
     index2 = random.randint(0, len(Result[index1]) - 1)
     index3 = random.randint(0, len(Result) - 1)
@@ -349,7 +349,7 @@ def Swap(File_Reader,Result,Q_array):
                           + File_Reader.ori_distance[Result[index3][index4][0]][Result[index3][index4][1]] > File_Reader.Capacity) \
         or (Q_array[index3] + File_Reader.ori_distance[Result[index1][index2][0]][Result[index1][index2][1]] \
                           - File_Reader.ori_distance[Result[index3][index4][0]][Result[index3][index4][1]] > File_Reader.Capacity):
-        return  0
+        return 0
     change1 = 0
     change2 = 0
     if index2 == 0 and index2 != len(Result[index1]) - 1:
@@ -395,7 +395,7 @@ def Swap(File_Reader,Result,Q_array):
                      File_Reader.distance[Result[index1][index2][1]][File_Reader.Depot])
 
     new_cost = change2 + change1
-    if new_cost < 0:
+    if new_cost < 0 or sharking:
         Q_array[index1] = Q_array[index1] - File_Reader.ori_distance[Result[index1][index2][0]][Result[index1][index2][1]] \
                           + File_Reader.ori_distance[Result[index3][index4][0]][Result[index3][index4][1]]
         Q_array[index3] = Q_array[index3] + File_Reader.ori_distance[Result[index1][index2][0]][Result[index1][index2][1]] \
@@ -406,9 +406,7 @@ def Swap(File_Reader,Result,Q_array):
         return new_cost
     else:
         return 0
-
-
-def two_opt_single(File_Reader,Result,all_cost):
+def two_opt_single(File_Reader,Result,all_cost,sharking):
     index = random.randint(0, len(Result) - 1)
     while len(Result[index]) == 1:
         index = random.randint(0, len(Result) - 1)
@@ -431,7 +429,7 @@ def two_opt_single(File_Reader,Result,all_cost):
                                File_Reader.distance[Result[index][i + n - 1][1]][Result[index][i + n - 1 + 1][0]]) \
                    + (File_Reader.distance[Result[index][i - 1][1]][Result[index][i + n - 1][1]] +
                       File_Reader.distance[Result[index][i][0]][Result[index][i + n - 1 + 1][0]])
-    if new_cost < all_cost:
+    if new_cost < all_cost or sharking:
         a = Result[index][i : i+n]
         for k in range(0,n):
             a[k] = (a[k][1],a[k][0])
@@ -494,7 +492,7 @@ def two_opt_double(File_Reader,Result,Q_array):
                    File_Reader.distance[Result[index3][index4 - 1][1]][Result[index3][index4][0]]) \
                 + (File_Reader.distance[Result[index1][index2 - 1][1]][Result[index3][index4][0]] +
                    File_Reader.distance[Result[index3][index4 - 1][1]][Result[index1][index2][0]])
-    if cost2 < cost1 and cost2 < 0 :
+    if cost2 < cost1 and cost2 < 0:
         for i in range(0,len(path4)):
             path1.append(path4[i])
         for i in range(0,len(path2)):
@@ -566,11 +564,33 @@ def Path_Scanning(File_Reader):
         Result.append(path)
     return all_cost,Result
 def VNS(File_Reader , all_cost , Result , Q_array, numbers):
-    sharking = random.randint(0,4)
     i = 0
-    s = 1000
-    out_cost = all_cost
+    s = 10000
     while i < numbers:
+        out_cost = all_cost
+        sharking = random.randint(0, 3)
+        sharking = 2
+        Result1 = []
+        for l in Result:
+            Result1.append(l.copy())
+        Q_array1 = []
+        for l in Q_array:
+            Q_array1.append(l)
+        if sharking == 0:
+            change_cost = two_opt_single(File_Reader, Result1, all_cost , True)
+            out_cost = change_cost
+        if sharking == 1:
+            max = 0
+            for tt in range(0, len(Result1)):
+                if max < len(Result1[tt]):
+                    max = tt
+            change_cost = Double_insertion(File_Reader, Result1, max, Q_array1,True)
+            out_cost = out_cost + change_cost
+        if sharking == 2:
+            Swap(File_Reader, Result1, Q_array1,True)
+        if sharking == 3:
+            change_cost = Filp(File_Reader, Result1, out_cost,True)
+            out_cost = change_cost
         # 这里将执行sharking操作
         j = 0
         while j <= 4:
@@ -578,7 +598,7 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers):
             t = 0
             if j==0:
                 while t <= s:
-                    change_cost = two_opt_double(File_Reader, Result, Q_array)
+                    change_cost = two_opt_double(File_Reader, Result1, Q_array1)
                     if change_cost < 0:
                         Good = True
                         out_cost = out_cost + change_cost
@@ -587,7 +607,7 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers):
                         t = t + 1
             if j==1:
                 while t <= s:
-                    change_cost = two_opt_single(File_Reader, Result, out_cost)
+                    change_cost = two_opt_single(File_Reader, Result1, out_cost,False)
                     if change_cost < out_cost:
                         j = 0
                         out_cost = change_cost
@@ -598,10 +618,10 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers):
             if j==2:
                 while t <= s:
                     max = 0
-                    for i in range(0, len(Result)):
-                        if max < len(Result[i]):
-                            max = i
-                    change_cost = Double_insertion(File_Reader, Result,max, Q_array)
+                    for tt in range(0, len(Result)):
+                        if max < len(Result[tt]):
+                            max = tt
+                    change_cost = Double_insertion(File_Reader, Result1,max, Q_array1,False)
                     if change_cost < 0:
                         j = 0
                         out_cost = out_cost + change_cost
@@ -610,18 +630,20 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers):
                     else:
                         t = t + 1
             if j==3:
-                while t <= s:
-                    change_cost = Swap(File_Reader, Result, Q_array)
-                    if change_cost < 0:
-                        j = 0
-                        out_cost = out_cost + change_cost
-                        Good = True
-                        break
-                    else:
-                        t = t + 1
+                j = j + 1
+                continue
+                # while t <= s:
+                #     change_cost = Swap(File_Reader, Result1, Q_array1,False)
+                #     if change_cost < 0:
+                #         j = 0
+                #         out_cost = out_cost + change_cost
+                #         Good = True
+                #         break
+                #     else:
+                #         t = t + 1
             if j==4:
                 while t <= s:
-                    change_cost = Filp(File_Reader, Result, out_cost)
+                    change_cost = Filp(File_Reader, Result1, out_cost,False)
                     if change_cost < out_cost:
                         j = 0
                         out_cost = change_cost
@@ -631,32 +653,38 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers):
                         t = t + 1
             if not Good :
                 j = j+1
-        i = i +1
-    return out_cost
+        cost4 = 0
+
+        for k in Result1:
+            last = File_Reader.Depot
+            for j in k:
+                cost4 = cost4 + File_Reader.distance[last][j[0]]
+                cost4 = cost4 + File_Reader.ori_distance[j[0]][j[1]]
+                last = j[1]
+            cost4 = cost4 + File_Reader.distance[last][File_Reader.Depot]
+        out_cost = cost4
+        if all_cost > out_cost:
+            print(out_cost)
+            Result.clear()
+            for l in Result1:
+                Result.append(l.copy())
+            Q_array.clear()
+            for l in Q_array1:
+                Q_array.append(l)
+            all_cost = out_cost
+        i = i + 1
+    return all_cost
 if __name__ == '__main__':
     start = time.time()
     # filename = sys.argv[1]
     # timelimit = int(sys.argv[3])
     # seed = int(sys.argv[5])
-    File_Reader = File_Reader('egl-s1-A.dat')
+    File_Reader = File_Reader('egl-e1-A.dat')
     File_Reader.Read_FIle()
     test = File_Reader.Demand_List.copy()
     Result = None
     cost , Result = Path_Scanning(File_Reader)
-    print('s',end=' ')
-    for i in Result:
-        print('0', end=',')
-        for j in i:
-            print('(',end='')
-            print(j[0],end=',')
-            print(j[1],end=')')
-            print(',',end='')
-        if i != Result[-1]:
-            print('0',end=',')
-        else:
-            print('0')
-    print('q',end=' ')
-    print('')
+
     max = 0
     Q_array = []
     for i in Result :
@@ -667,45 +695,56 @@ if __name__ == '__main__':
     for i in range(0,len(Result)):
         if max < len(Result[i]):
             max = i
-
-    while True :
-        test2 = test.copy()
-        cost2 = 0
-        cost4 = 0
-        for i in Result:
-            last = File_Reader.Depot
-            for j in i:
-                cost4 = cost4 + File_Reader.distance[last][j[0]]
-                cost4 = cost4 + File_Reader.ori_distance[j[0]][j[1]]
-                last = j[1]
-            cost4 = cost4 + File_Reader.distance[last][File_Reader.Depot]
-        # cost5 = Double_insertion(File_Reader,Result,max,Q_array)
-        # cost3 = cost4  + cost5
-        # cost3 = Filp(File_Reader,Result,cost3)
-        # cost3 = two_opt_single(File_Reader,Result,cost3)
-        # cost5 = two_opt_double(File_Reader,Result,Q_array)
-        # cost3 = cost3 + cost5
-        cost3 = VNS(File_Reader,cost4,Result,Q_array,11)
-        for i in Result:
-            last = File_Reader.Depot
-            for j in i:
-                cost2 = cost2 + File_Reader.distance[last][j[0]]
-                cost2 = cost2 + File_Reader.ori_distance[j[0]][j[1]]
-                last = j[1]
-            cost2 = cost2 + File_Reader.distance[last][File_Reader.Depot]
-        print(cost2)
-        for i in Result:
-            load = 0
-            for k in i:
-                test2.remove((k[0],k[1]))
-                test2.remove((k[1],k[0]))
-                load = load + File_Reader.ori_distance[k[0]][k[1]]
-            if load > File_Reader.Capacity:
-                print('超出容量')
-        if len(test2) != 0 :
-            print('解错误')
-        if cost3 != cost2:
-            print(cost3)
-            break
+    test2 = test.copy()
+    cost2 = 0
+    cost4 = 0
+    for i in Result:
+        last = File_Reader.Depot
+        for j in i:
+            cost4 = cost4 + File_Reader.distance[last][j[0]]
+            cost4 = cost4 + File_Reader.ori_distance[j[0]][j[1]]
+            last = j[1]
+        cost4 = cost4 + File_Reader.distance[last][File_Reader.Depot]
+    # cost5 = Double_insertion(File_Reader,Result,max,Q_array)
+    # cost3 = cost4  + cost5
+    # cost3 = Filp(File_Reader,Result,cost3)
+    # cost3 = two_opt_single(File_Reader,Result,cost3)
+    # cost5 = two_opt_double(File_Reader,Result,Q_array)
+    # cost3 = cost3 + cost5
+    cost3 = VNS(File_Reader, cost4, Result, Q_array, 1000)
+    # for i in Result:
+    #     last = File_Reader.Depot
+    #     for j in i:
+    #         cost2 = cost2 + File_Reader.distance[last][j[0]]
+    #         cost2 = cost2 + File_Reader.ori_distance[j[0]][j[1]]
+    #         last = j[1]
+    #     cost2 = cost2 + File_Reader.distance[last][File_Reader.Depot]
     # print(cost2)
+    # for i in Result:
+    #     load = 0
+    #     for k in i:
+    #         test2.remove((k[0], k[1]))
+    #         test2.remove((k[1], k[0]))
+    #         load = load + File_Reader.ori_distance[k[0]][k[1]]
+    #     if load > File_Reader.Capacity:
+    #         print('超出容量')
+    # if len(test2) != 0:
+    #     print('解错误')
+    # if cost3 != cost2:
+    #     print('????')
+
+    print('s', end=' ')
+    for i in Result:
+        print('0', end=',')
+        for j in i:
+            print('(', end='')
+            print(j[0], end=',')
+            print(j[1], end=')')
+            print(',', end='')
+        if i != Result[-1]:
+            print('0', end=',')
+        else:
+            print('0')
+    print('q', end=' ')
+    print(cost3)
     run_time = (time.time() - start)
