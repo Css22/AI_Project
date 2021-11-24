@@ -291,7 +291,7 @@ def Double_insertion(File_Reader,Result ,max_length,Q_array,sharking):
     else:
         Add_load = 0
         for i in range(0, n):
-            Add_load = Add_load + File_Reader.ori_distance[Result[index1][index2 + i][0]][
+            Add_load = Add_load + File_Reader.demand[Result[index1][index2 + i][0]][
                 Result[index1][index2 + i][1]]
         if Q_array[index3] + Add_load > File_Reader.Capacity:
             return 0
@@ -345,10 +345,10 @@ def Swap(File_Reader,Result,Q_array,sharking):
     while index3 == index1:
         index3 = random.randint(0, len(Result) - 1)
     index4 = random.randint(0, len(Result[index3]) - 1)
-    if (Q_array[index1] - File_Reader.ori_distance[Result[index1][index2][0]][Result[index1][index2][1]] \
-                          + File_Reader.ori_distance[Result[index3][index4][0]][Result[index3][index4][1]] > File_Reader.Capacity) \
-        or (Q_array[index3] + File_Reader.ori_distance[Result[index1][index2][0]][Result[index1][index2][1]] \
-                          - File_Reader.ori_distance[Result[index3][index4][0]][Result[index3][index4][1]] > File_Reader.Capacity):
+    if (Q_array[index1] - File_Reader.demand[Result[index1][index2][0]][Result[index1][index2][1]] \
+                          + File_Reader.demand[Result[index3][index4][0]][Result[index3][index4][1]] > File_Reader.Capacity) \
+        or (Q_array[index3] + File_Reader.demand[Result[index1][index2][0]][Result[index1][index2][1]] \
+                          - File_Reader.demand[Result[index3][index4][0]][Result[index3][index4][1]] > File_Reader.Capacity):
         return 0
     change1 = 0
     change2 = 0
@@ -396,10 +396,10 @@ def Swap(File_Reader,Result,Q_array,sharking):
 
     new_cost = change2 + change1
     if new_cost < 0 or sharking:
-        Q_array[index1] = Q_array[index1] - File_Reader.ori_distance[Result[index1][index2][0]][Result[index1][index2][1]] \
-                          + File_Reader.ori_distance[Result[index3][index4][0]][Result[index3][index4][1]]
-        Q_array[index3] = Q_array[index3] + File_Reader.ori_distance[Result[index1][index2][0]][Result[index1][index2][1]] \
-                          - File_Reader.ori_distance[Result[index3][index4][0]][Result[index3][index4][1]]
+        Q_array[index1] = Q_array[index1] - File_Reader.demand[Result[index1][index2][0]][Result[index1][index2][1]] \
+                          + File_Reader.demand[Result[index3][index4][0]][Result[index3][index4][1]]
+        Q_array[index3] = Q_array[index3] + File_Reader.demand[Result[index1][index2][0]][Result[index1][index2][1]] \
+                          - File_Reader.demand[Result[index3][index4][0]][Result[index3][index4][1]]
         a = Result[index1][index2]
         Result[index1][index2] = Result[index3][index4]
         Result[index3][index4] = a
@@ -462,20 +462,20 @@ def two_opt_double(File_Reader,Result,Q_array):
     load4 = 0
     if index2 < len(Result[index1])/2:
         for i in range(0,index2):
-            load1 = load1 + File_Reader.ori_distance[Result[index1][i][0]][Result[index1][i][1]]
+            load1 = load1 + File_Reader.demand[Result[index1][i][0]][Result[index1][i][1]]
         load2 = Q_array[index1] - load1
     else:
         for i in range(index2, len(Result[index1])):
-            load2 = load2 + File_Reader.ori_distance[Result[index1][i][0]][Result[index1][i][1]]
+            load2 = load2 + File_Reader.demand[Result[index1][i][0]][Result[index1][i][1]]
         load1 = Q_array[index1] - load2
 
     if index4 < len(Result[index3])/2:
         for i in range(0,index4):
-            load3 = load3 + File_Reader.ori_distance[Result[index3][i][0]][Result[index3][i][1]]
+            load3 = load3 + File_Reader.demand[Result[index3][i][0]][Result[index3][i][1]]
         load4 = Q_array[index3] - load3
     else:
         for i in range(index4, len(Result[index3])):
-            load4 = load4 + File_Reader.ori_distance[Result[index3][i][0]][Result[index3][i][1]]
+            load4 = load4 + File_Reader.demand[Result[index3][i][0]][Result[index3][i][1]]
         load3 = Q_array[index3] - load4
 
     cost1 = 0
@@ -567,12 +567,14 @@ def Path_Scanning(File_Reader):
     return all_cost,Result
 def VNS(File_Reader , all_cost , Result , Q_array, numbers,length):
     i = 0
-    if length /File_Reader.Vehicles_Number > 22:
-        s = 2000
-    elif length /File_Reader.Vehicles_Number > 30:
-        s = 500
-    else:
-        s = 5000
+    # if length /File_Reader.Vehicles_Number > 22:
+    #
+    #     s = 2000
+    # elif length /File_Reader.Vehicles_Number > 30:
+    #     s = 500
+    # else:
+    #     s = 5000
+    s = 500
     while i < numbers:
         out_cost = all_cost
         sharking = random.randint(0, 3)
@@ -675,10 +677,10 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers,length):
     return all_cost
 if __name__ == '__main__':
     start = time.time()
-    # filename = sys.argv[1]
-    # timelimit = int(sys.argv[3])
-    # seed = int(sys.argv[5])
-    File_Reader = File_Reader('val7A.dat')
+    filename = sys.argv[1]
+    timelimit = int(sys.argv[3])
+    seed = int(sys.argv[5])
+    File_Reader = File_Reader(filename)
     File_Reader.Read_FIle()
     length = len(File_Reader.Demand_List)
     test = File_Reader.Demand_List.copy()
@@ -689,38 +691,39 @@ if __name__ == '__main__':
     for i in Result :
         load = 0
         for  k in i:
-            load = load + File_Reader.ori_distance[k[0]][k[1]]
+            load = load + File_Reader.demand[k[0]][k[1]]
         Q_array.append(load)
     for i in range(0,len(Result)):
         if max < len(Result[i]):
             max = i
-    test2 = test.copy()
-    cost2 = 0
-    cost4 = 0
+    # test2 = test.copy()
+    # cost2 = 0
+    # cost4 = 0
 
 
-    cost3 = VNS(File_Reader, cost, Result, Q_array, 0, length)
-    Result = [[(11,16),(16,10),(10,9),(9,8),(8,14),(14,15),(16,15),(15,9),(10,1)], [(1,35),(35,36),(36,37),(37,38),(38,39),(39,32),(32,31),(31,37),(37,30),(30,31),(31,38),(38,4),(4,5),(39,5),(4,3),(3,7),(13,17),(17,20),(20,21),(21,22),(22,25),(25,24),(24,23),(23,20),(21,24),(22,18),(18,17),(17,12),(12,6),(6,2),(2,36),(36,29),(29,30),(37,3),(3,2),(2,1)], [(1,40),(40,8),(8,1),(1,11),(11,12),(12,13),(13,19),(19,18),(18,13),(13,7),(7,6),(6,1),(1,33),(33,34),(34,27),(27,28),(28,35),(35,34),(34,26),(26,27),(26,33)]]
-    for i in Result:
-        last = File_Reader.Depot
-        for j in i:
-            cost2 = cost2 + File_Reader.distance[last][j[0]]
-            cost2 = cost2 + File_Reader.ori_distance[j[0]][j[1]]
-            last = j[1]
-        cost2 = cost2 + File_Reader.distance[last][File_Reader.Depot]
-    for i in Result:
-        load = 0
-        for k in i:
-            test2.remove((k[0], k[1]))
-            test2.remove((k[1], k[0]))
-            load = load + File_Reader.ori_distance[k[0]][k[1]]
-        if load > File_Reader.Capacity:
-            print(load)
-            print('超出容量')
-    if len(test2) != 0:
-        print('解错误')
-    if cost3 != cost2:
-        print(cost2)
+    cost3 = VNS(File_Reader, cost, Result, Q_array, 950, length)
+
+
+    # for i in Result:
+    #     last = File_Reader.Depot
+    #     for j in i:
+    #         cost2 = cost2 + File_Reader.distance[last][j[0]]
+    #         cost2 = cost2 + File_Reader.ori_distance[j[0]][j[1]]
+    #         last = j[1]
+    #     cost2 = cost2 + File_Reader.distance[last][File_Reader.Depot]
+    # for i in Result:
+    #     load = 0
+    #     for k in i:
+    #         test2.remove((k[0], k[1]))
+    #         test2.remove((k[1], k[0]))
+    #         load = load + File_Reader.demand[k[0]][k[1]]
+    #     if load > File_Reader.Capacity:
+    #         print(load)
+    #         print('超出容量')
+    # if len(test2) != 0:
+    #     print('解错误')
+    # if cost3 != cost2:
+    #     print(cost2)
     print('s', end=' ')
     for i in Result:
         print('0', end=',')
