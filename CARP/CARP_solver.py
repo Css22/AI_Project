@@ -676,10 +676,10 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers,length,s):
     return all_cost
 if __name__ == '__main__':
     start = time.time()
-    # filename = sys.argv[1]
-    # timelimit = int(sys.argv[3])
-    # seed = int(sys.argv[5])
-    File_Reader = File_Reader('val1A.dat')
+    filename = sys.argv[1]
+    timelimit = int(sys.argv[3])
+    seed = int(sys.argv[5])
+    File_Reader = File_Reader(filename)
     File_Reader.Read_FIle()
     length = len(File_Reader.Demand_List)
     test = File_Reader.Demand_List.copy()
@@ -700,16 +700,15 @@ if __name__ == '__main__':
     # cost4 = 0
     numbers = 2000
     if length/File_Reader.Vehicles_Number > 21:
-
         s = 1000
-        numbers = 450
+        numbers = 500
     elif length/File_Reader.Vehicles_Number < 10:
         s  = 200
-        numbers = 5000
+        numbers = 4000
     else:
         s = 500
         numbers = 2000
-    cost3 = VNS(File_Reader, cost, Result, Q_array, 2000, length , s)
+    cost3 = VNS(File_Reader, cost, Result, Q_array, numbers, length , s)
 
 
     # for i in Result:
@@ -747,4 +746,4 @@ if __name__ == '__main__':
     print('q', end=' ')
     print(cost3)
     run_time = (time.time() - start)
-    print(run_time)
+    # print(run_time)
