@@ -565,7 +565,7 @@ def Path_Scanning(File_Reader):
         all_cost = all_cost + cost
         Result.append(path)
     return all_cost,Result
-def VNS(File_Reader , all_cost , Result , Q_array, numbers,length):
+def VNS(File_Reader , all_cost , Result , Q_array, numbers,length,s):
     i = 0
     # if length /File_Reader.Vehicles_Number > 22:
     #
@@ -574,7 +574,6 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers,length):
     #     s = 500
     # else:
     #     s = 5000
-    s = 500
     while i < numbers:
         out_cost = all_cost
         sharking = random.randint(0, 3)
@@ -699,9 +698,17 @@ if __name__ == '__main__':
     # test2 = test.copy()
     # cost2 = 0
     # cost4 = 0
-
-
-    cost3 = VNS(File_Reader, cost, Result, Q_array, 950, length)
+    numbers = 2000
+    if length/File_Reader.Vehicles_Number > 21:
+        s = 1000
+        numbers = 500
+    elif length/File_Reader.Vehicles_Number < 10:
+        s  = 200
+        numbers = 5000
+    else:
+        s = 500
+        numbers = 2000
+    cost3 = VNS(File_Reader, cost, Result, Q_array, 2000, length , s)
 
 
     # for i in Result:
