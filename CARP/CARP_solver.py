@@ -178,18 +178,25 @@ def Single_insertion(File_Reader,Result,Q_array):
 def Double_insertion(File_Reader,Result ,max_length,Q_array,sharking):
     n = random.randint(1, max_length)
     index1 = random.randint(0, len(Result) - 1)
+    j = 0
     while len(Result[index1]) <= n:
         index1 = random.randint(0, len(Result) - 1)
+        j = j + 1
+        if j == 5:
+            return 0
     index2 = random.randint(0, len(Result[index1]) - 1 - (n - 1))
     index3 = random.randint(0, len(Result) - 1)
     index4 = random.randint(0, len(Result[index3]))
 
     if index1 == index3:
         index4 = random.randint(0, len(Result[index3]) - 1)
+        j = 0
         while index2 == index4 or (index2 < index4 and index2 + n - 1 >= index4) or index2 + n == index4:
             index2 = random.randint(0, len(Result[index1]) - 1 - (n - 1))
             index4 = random.randint(0, len(Result[index3]) - 1)
-
+            j = j + 1
+            if j == 5:
+                return 0
         if index2 - index4 == 1:
             change = 0
             if index4 == 0 and index2 + n - 1 == len(Result[index3]) - 1:
@@ -342,8 +349,12 @@ def Swap(File_Reader,Result,Q_array,sharking):
     index1 = random.randint(0, len(Result) - 1)
     index2 = random.randint(0, len(Result[index1]) - 1)
     index3 = random.randint(0, len(Result) - 1)
+    j = 0
     while index3 == index1:
         index3 = random.randint(0, len(Result) - 1)
+        j = j+1
+        if j==5:
+            return 0
     index4 = random.randint(0, len(Result[index3]) - 1)
     if (Q_array[index1] - File_Reader.demand[Result[index1][index2][0]][Result[index1][index2][1]] \
                           + File_Reader.demand[Result[index3][index4][0]][Result[index3][index4][1]] > File_Reader.Capacity) \
@@ -408,8 +419,12 @@ def Swap(File_Reader,Result,Q_array,sharking):
         return 0
 def two_opt_single(File_Reader,Result,all_cost,sharking):
     index = random.randint(0, len(Result) - 1)
+    j = 0
     while len(Result[index]) == 1:
         index = random.randint(0, len(Result) - 1)
+        j = j + 1
+        if j==5:
+            return all_cost
     max = len(Result[index])
     n = random.randint(1,max-1)
     i = random.randint(0,len(Result[index]) - 1 - (n - 1))
@@ -441,14 +456,20 @@ def two_opt_single(File_Reader,Result,all_cost,sharking):
         return all_cost
 def two_opt_double(File_Reader,Result,Q_array):
     index1 = random.randint(0,len(Result) - 1)
+    j = 0
     while len(Result[index1]) <= 2:
         index1 = random.randint(0, len(Result) - 1)
+        j = j +1
+        if j == 5:
+            return 0
     index2 = random.randint(1,len(Result[index1]) - 1)
     index3 = random.randint(0,len(Result) -1 )
+    j = 0
     while index3 == index1 or len(Result[index3]) <= 2:
-        if len(Result) == 2:
-            return 0
         index3 = random.randint(0,len(Result) - 1)
+        j = j + 1
+        if j == 5:
+            return 0
     index4 = random.randint(1,len(Result[index3]) - 1)
 
     path1 = Result[index1][0:index2]
@@ -565,7 +586,7 @@ def Path_Scanning(File_Reader):
         all_cost = all_cost + cost
         Result.append(path)
     return all_cost,Result
-def VNS(File_Reader , all_cost , Result , Q_array, numbers,length,s):
+def VNS(File_Reader , all_cost , Result , Q_array,length,s,start,timeLimit):
     i = 0
     # if length /File_Reader.Vehicles_Number > 22:
     #
@@ -574,7 +595,7 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers,length,s):
     #     s = 500
     # else:
     #     s = 5000
-    while i < numbers:
+    while True:
         out_cost = all_cost
         sharking = random.randint(0, 3)
         Result1 = []
@@ -673,6 +694,9 @@ def VNS(File_Reader , all_cost , Result , Q_array, numbers,length,s):
                 Q_array.append(l)
             all_cost = out_cost
         i = i + 1
+        run_time = (time.time() - start)
+        if(timeLimit - run_time < 1):
+            break
     return all_cost
 if __name__ == '__main__':
     start = time.time()
@@ -708,7 +732,7 @@ if __name__ == '__main__':
     else:
         s = 500
         numbers = 2000
-    cost3 = VNS(File_Reader, cost, Result, Q_array, numbers, length , s)
+    cost3 = VNS(File_Reader, cost, Result, Q_array, length , s,start,timelimit)
 
 
     # for i in Result:
