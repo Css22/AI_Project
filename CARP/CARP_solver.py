@@ -1,13 +1,13 @@
 import copy
-import threading
+import multiprocessing as mul
 import time
 import sys
 import random
 from File_Reader import File_Reader
 INF = 0x3f3f3f3f
-class MyThread(threading.Thread):
-    def __init__(self, File_Reader, all_cost, Result,Q_array,length,s,start1,timeLimit,thread_name):
-        super(MyThread, self).__init__(name=thread_name)
+class MyThread(mul.Process):
+    def __init__(self, File_Reader, all_cost, Result,Q_array,length,s,start1,timeLimit,thread_name,seed):
+        super(MyThread, self).__init__()
         self.File_Reader = File_Reader
         self.all_cost = all_cost
         self.Result = Result
@@ -16,9 +16,10 @@ class MyThread(threading.Thread):
         self.s = s
         self.start1 = start1
         self.timeLimit = timeLimit
-        self.cost3 = 0
+        self.cost3 = [1]
+        self.seed = seed
     def run(self):
-        self.cost3 = VNS(self.File_Reader, self.all_cost, self.Result, self.Q_array, self.length, self.s, self.start1, self.timeLimit)
+        VNS(self.File_Reader, self.all_cost, self.Result, self.Q_array, self.length, self.s, self.start1, self.timeLimit,self.seed,self.cost3)
 
 def Filp(File_Reader , Result,all_cost,sharking):
     index = random.randint(0, len(Result) - 1)
@@ -599,7 +600,8 @@ def Path_Scanning(File_Reader):
         all_cost = all_cost + cost
         Result.append(path)
     return all_cost,Result
-def VNS(File_Reader , all_cost , Result , Q_array,length,s,start,timeLimit):
+def VNS(File_Reader , all_cost , Result , Q_array,length,s,start,timeLimit,seed,cost3,q):
+    random.seed(seed)
     i = 0
     # if length /File_Reader.Vehicles_Number > 22:
     #
@@ -699,6 +701,7 @@ def VNS(File_Reader , all_cost , Result , Q_array,length,s,start,timeLimit):
             if not Good :
                 j = j+1
         if all_cost > out_cost:
+            print(all_cost)
             Result.clear()
             for l in Result1:
                 Result.append(l.copy())
@@ -710,7 +713,6 @@ def VNS(File_Reader , all_cost , Result , Q_array,length,s,start,timeLimit):
         run_time = (time.time() - start)
         if(timeLimit - run_time < 1):
             break
-    return all_cost
 if __name__ == '__main__':
     start = time.time()
     filename = sys.argv[1]
@@ -747,26 +749,26 @@ if __name__ == '__main__':
         numbers = 2000
     # cost3 = VNS(File_Reader, cost, Result, Q_array, length , s,start,timelimit)
     threadList = []
-    for i in range(8):
+    q = mul.Queue
+    for i in range(1):
+        seed =  random.randint(10,10000000)
         Result11 = copy.deepcopy(Result)
         Q_array11 = copy.deepcopy(Q_array)
-        thread = MyThread(File_Reader, cost,Result11,Q_array11,length,s,start,timelimit,str(i))
+        thread = MyThread(File_Reader, cost,Result11,Q_array11,length,s,start,timelimit,str(i),seed,q)
         threadList.append(thread)
-
     min = INF
     Result = []
 
     for s1s1 in threadList:
-        s1s1.setDaemon(True)
         s1s1.start()
     for s11 in threadList:
         s11.join()
 
     for i in threadList:
-        print(i.cost3)
-        if i.cost3 <= min:
+        print(i.cost3[-1])
+        if i.cost3[0] <= min:
             Result = i.Result
-            cost3 = i.cost3
+            cost3 = i.cost3[0]
 
     # for i in Result:
     #     last = File_Reader.Depot
