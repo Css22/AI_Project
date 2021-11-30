@@ -1,11 +1,24 @@
-
+import copy
+import threading
 import time
 import sys
 import random
 from File_Reader import File_Reader
 INF = 0x3f3f3f3f
-
-
+class MyThread(threading.Thread):
+    def __init__(self, File_Reader, all_cost, Result,Q_array,length,s,start1,timeLimit,thread_name):
+        super(MyThread, self).__init__(name=thread_name)
+        self.File_Reader = File_Reader
+        self.all_cost = all_cost
+        self.Result = Result
+        self.Q_array = Q_array
+        self.length = length
+        self.s = s
+        self.start1 = start1
+        self.timeLimit = timeLimit
+        self.cost3 = 0
+    def run(self):
+        self.cost3 = VNS(self.File_Reader, self.all_cost, self.Result, self.Q_array, self.length, self.s, self.start1, self.timeLimit)
 
 def Filp(File_Reader , Result,all_cost,sharking):
     index = random.randint(0, len(Result) - 1)
@@ -732,8 +745,28 @@ if __name__ == '__main__':
     else:
         s = 500
         numbers = 2000
-    cost3 = VNS(File_Reader, cost, Result, Q_array, length , s,start,timelimit)
+    # cost3 = VNS(File_Reader, cost, Result, Q_array, length , s,start,timelimit)
+    threadList = []
+    for i in range(8):
+        Result11 = copy.deepcopy(Result)
+        Q_array11 = copy.deepcopy(Q_array)
+        thread = MyThread(File_Reader, cost,Result11,Q_array11,length,s,start,timelimit,str(i))
+        threadList.append(thread)
 
+    min = INF
+    Result = []
+
+    for s1s1 in threadList:
+        s1s1.setDaemon(True)
+        s1s1.start()
+    for s11 in threadList:
+        s11.join()
+
+    for i in threadList:
+        print(i.cost3)
+        if i.cost3 <= min:
+            Result = i.Result
+            cost3 = i.cost3
 
     # for i in Result:
     #     last = File_Reader.Depot
